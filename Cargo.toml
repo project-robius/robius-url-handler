@@ -1,0 +1,12 @@
+[package]
+name = "robius-url-handler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies.objc2-foundation]
+version = "0.2.2"
+features = ["NSAppleEventManager", "NSAppleEventDescriptor", "NSURL"]
+
+[dependencies.objc2]
+version = "0.5.2"
+default-features = false
