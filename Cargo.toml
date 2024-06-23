@@ -21,3 +21,9 @@ features = [
     "NSURL",
 ]
 
+[target.'cfg(target_os = "windows")'.dependencies.windows]
+version = "0.57.0"
+features = [
+    "ApplicationModel_Activation",
+    "ApplicationModel_Core",
+]
