@@ -3,10 +3,21 @@ name = "robius-url-handler"
 version = "0.1.0"
 edition = "2021"
 
-[dependencies.objc2-foundation]
-version = "0.2.2"
-features = ["NSAppleEventManager", "NSAppleEventDescriptor", "NSString", "NSURL"]
+[dependencies]
+cfg-if = "1.0.0"
 
-[dependencies.objc2]
+[target.'cfg(target_os = "macos")'.dependencies.objc2]
 version = "0.5.2"
 default-features = false
+
+[target.'cfg(target_os = "macos")'.dependencies.objc2-foundation]
+version = "0.2.2"
+features = [
+    # We currently roll our own version of the following structs because they don't have all the required functionality.
+    # See the comment in sys::macos::objc2 for more details.
+    # "NSAppleEventManager",
+    # "NSAppleEventDescriptor",
+    "NSString",
+    "NSURL",
+]
+
