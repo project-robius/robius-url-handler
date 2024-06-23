@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies.objc2-foundation]
 version = "0.2.2"
-features = ["NSAppleEventManager", "NSAppleEventDescriptor", "NSURL"]
+features = ["NSAppleEventManager", "NSAppleEventDescriptor", "NSString", "NSURL"]
 
 [dependencies.objc2]
 version = "0.5.2"

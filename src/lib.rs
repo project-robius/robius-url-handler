@@ -2,11 +2,11 @@ use std::mem;
 
 use objc2::{
     declare_class, extern_class, extern_methods, msg_send_id, mutability,
-    rc::{Allocated, Id, Retained},
+    rc::{autoreleasepool, Allocated, Id, Retained},
     runtime::{AnyObject, NSObjectProtocol, Sel},
     sel, ClassType, DeclaredClass,
 };
-use objc2_foundation::NSObject;
+use objc2_foundation::{NSObject, NSString};
 
 pub fn register_handler(handler: fn(&str)) {
     let shared = unsafe { NSAppleEventManager::sharedAppleEventManager() };
@@ -68,11 +68,14 @@ unsafe impl NSObjectProtocol for NSAppleEventDescriptor {}
 extern_methods!(
     #[allow(non_snake_case)]
     unsafe impl NSAppleEventDescriptor {
-        #[method_id(@__retain_semantics Other paramDescriptor:)]
-        pub unsafe fn paramDescriptor(
+        #[method_id(@__retain_semantics Other paramDescriptorForKeyword:)]
+        pub unsafe fn param_descriptor(
             &self,
             for_keyword: u32,
         ) -> Option<Retained<NSAppleEventDescriptor>>;
+
+        #[method_id(@__retain_semantics Other stringValue)]
+        pub unsafe fn string_value(&self) -> Option<Retained<NSString>>;
     }
 );
 
@@ -104,15 +107,23 @@ declare_class!(
         }
 
         #[method(event:replyEvent:)]
-        fn handle_event(&self, _event: &NSAppleEventDescriptor, _: &NSAppleEventDescriptor) {
+        fn handle_event(&self, event: &NSAppleEventDescriptor, _: &NSAppleEventDescriptor) {
+            const KEY_DIRECT_OBJECT: u32 = u32::from_be_bytes(*b"----");
+
+            let ns_string = unsafe { event.param_descriptor(KEY_DIRECT_OBJECT) }
+                .map(|descriptor| unsafe { descriptor.string_value() })
+                .flatten();
+
             let handler = self.ivars().handler;
 
-            // const K_INTERNET_EVENT_CLASS: &[u8; 4] = b"----";
-            // const THING: u32 = u32::from_be_bytes(*K_INTERNET_EVENT_CLASS);
-            // let r = unsafe { event.paramDescriptor(THING) };
-            // let s = format!("{:?}", r.is_none());
+            if let Some(ns_string) = ns_string {
+                autoreleasepool(|pool| {
+                    handler(ns_string.as_str(pool));
+                });
+            } else {
+                handler("stinky");
+            }
 
-            handler("hello");
         }
     }
 
