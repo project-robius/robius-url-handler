@@ -50,11 +50,7 @@ declare_class!(
                 autoreleasepool(|pool| {
                     handler(ns_string.as_str(pool));
                 });
-            } else {
-                // TODO: Handler takes in error?
-                handler("stinky");
             }
-
         }
     }
 

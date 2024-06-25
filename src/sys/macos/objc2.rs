@@ -1,5 +1,5 @@
 // TODO: Add upstream PR to objc2 to support AE framework, removing the need for
-// all these type definitions.
+// all these declarations.
 
 use ::objc2::{
     extern_class, extern_methods, mutability,

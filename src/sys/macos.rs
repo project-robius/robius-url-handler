@@ -9,15 +9,15 @@ pub(crate) fn register_handler(handler: fn(&str)) {
     let shared = unsafe { NSAppleEventManager::shared() };
     let delegate = Box::leak(Box::new(Delegate::new(handler)));
 
-    // TODO: Explain
-    const SPECIAL_SAUCE: u32 = u32::from_be_bytes(*b"GURL");
+    const INTERNET_EVENT_CLASS: u32 = u32::from_be_bytes(*b"GURL");
+    const AE_GET_URL: u32 = u32::from_be_bytes(*b"GURL");
 
     unsafe {
         shared.set_event_handler(
             delegate,
             sel!(event:replyEvent:),
-            SPECIAL_SAUCE,
-            SPECIAL_SAUCE,
+            INTERNET_EVENT_CLASS,
+            AE_GET_URL,
         )
     };
 }
