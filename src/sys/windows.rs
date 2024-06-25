@@ -11,7 +11,7 @@ use windows::{
 };
 
 pub(crate) fn register_handler(handler: fn(&str)) {
-    let view = CoreApplication::MainView().unwrap();
+    let view = CoreApplication::GetCurrentView().unwrap();
 
     let event_handler: TypedEventHandler<CoreApplicationView, IActivatedEventArgs> =
         TypedEventHandler::new(

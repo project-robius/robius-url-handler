@@ -7,8 +7,6 @@ use objc2::NSAppleEventManager;
 
 pub(crate) fn register_handler(handler: fn(&str)) {
     let shared = unsafe { NSAppleEventManager::shared() };
-    // TODO: Don't leak?
-    // TODO: Do we want to return an error if?
     let delegate = Box::leak(Box::new(Delegate::new(handler)));
 
     // TODO: Explain
